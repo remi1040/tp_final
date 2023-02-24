@@ -44,9 +44,20 @@ def test_water_attack_earth_lp(heros):
     hero_earth_adv=heros["hero_earth_adv"]
     ArenaDamageCalculator().computeDamage(hero_water,[hero_earth_adv])
     assert hero_earth_adv.lp==6
-
-
-from src.arena_damage_calculator import*
+def test_earth_attack_earth_lp(heros):
+    hero_earth=heros["hero_earth"]
+    hero_earth_adv=heros["hero_earth_adv"]
+    ArenaDamageCalculator().computeDamage(hero_earth,[hero_earth_adv])
+    assert hero_earth_adv.lp==5
+def test_water_attack_water_lp(heros):
+    hero_water=heros["hero_water"]
+    hero_water_adv=heros["hero_water_adv"]
+    ArenaDamageCalculator().computeDamage(hero_water,[hero_water_adv])
+    assert hero_water_adv.lp==5
+def test_fire_attack_fire_lp(heros):
+    hero_fire=heros["hero_fire"]
+    hero_fire_adv=heros["hero_fire_adv"]
+    ArenaDamageCalculator().computeDamage(hero_fire,[hero_fire_adv])
 
 
 

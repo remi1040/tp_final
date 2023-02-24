@@ -37,47 +37,42 @@ class ArenaDamageCalculator:
         if len(self.degats_inferieurs)>0:
             attacked=random.choice(self.degats_inferieurs)
         return attacked
+    def superieur(self,element1,element2):
+        if self.attacker.element == element1:
+            for defender in self.defenders:
+                if defender.lp!=0 and defender.element==element2:
+                    self.degats_superieurs.append(defender)
+    def inferieur(self,element1,element2):
+        if self.attacker.element == element1:
+            for defender in self.defenders:
+                if defender.lp!=0 and defender.element==element2:
+                    self.degats_inferieurs.append(defender)
+    def egalite(self,element1,element2):
+        if self.attacker.element== element1:
+            for defender in self.defenders:
+                if defender.lp!=0 and defender.element==element2:
+                    self.degats_egaux.append(defender)
+    def verifier_bonus(self):
+        for element1 in HeroElement:
+            for element2 in HeroElement:
+                if (element1,element2) in self.bonus:
+                    self.superieur(element1,element2)
+                elif (element2,element1) in self.bonus:
+                    self.inferieur(element1,element2)
+                else:
+                    self.egalite(element1,element2)
+                    
     def computeDamage(self, attacker:Hero, defenders: list[Hero]):
-        power = attacker.pow
-
+        self.defenders=defenders
+        self.attacker=attacker
         self.degats_superieurs = list()
         self.degats_egaux = list()
         self.degats_inferieurs = list()
-
-        if attacker.element == HeroElement.WATER:
-            for h in defenders:
-                #print(str(h.element) + str(attacker.element))
-                if h.lp == 0:
-                    continue
-                if h.element == HeroElement.FIRE:
-                    self.degats_superieurs.append(h)
-                elif h.element == HeroElement.WATER:
-                    self.degats_egaux.append(h)
-                else:
-                    self.degats_inferieurs.append(h)
-        elif attacker.element == HeroElement.FIRE:
-            for h in defenders:
-                print(str(h.element) + str(attacker.element))
-                if h.lp == 0:
-                    continue
-                if h.element == HeroElement.FIRE:
-                    self.degats_egaux.append(h)
-                elif h.element == HeroElement.WATER:
-                    self.degats_inferieurs.append(h)
-                else:
-                    self.degats_superieurs.append(h)
-        else:   # Hero is of type water
-            for h in defenders:
-                if h.lp == 0:
-                    continue
-                if h.element == HeroElement.FIRE:
-                    self.degats_inferieurs.append(h)
-                elif h.element == HeroElement.WATER:
-                    self.degats_superieurs.append(h)
-                else:
-                    self.degats_egaux.append(h)
-
-        
+        self.bonus = list()
+        self.bonus.append((HeroElement.WATER,HeroElement.FIRE))
+        self.bonus.append((HeroElement.FIRE,HeroElement.EARTH))
+        self.bonus.append((HeroElement.EARTH,HeroElement.WATER))
+        self.verifier_bonus()
         attacked=self.attacked()
         c = random.random() * 100 < attacker.crtr
         print(c)

@@ -80,12 +80,10 @@ class ArenaDamageCalculator:
             dmg = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
         else:
             dmg = attacker.pow * (1-attacked.defense / 7500)
-            # print(attacker.pow * (1-attacked.defense / 7500))
 
         ## BUFFS
         if Buff.ATTACK in attacker.buffs:
             dmg*=1.25
-
         if Buff.DEFENSE in attacked.buffs:
             dmg/=1.25
 

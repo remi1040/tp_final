@@ -10,7 +10,7 @@ class HeroElement(Enum):
 class Buff(Enum):
     ATTACK = 1
     DEFENSE = 2
-
+    HOLY = 3
 class Hero:
     def __init__(self, element: HeroElement, power, defense, leth, crtr, lp):
         # element du heros
@@ -75,32 +75,32 @@ class ArenaDamageCalculator:
         self.bonus.append((HeroElement.EARTH,HeroElement.WATER))
         self.verifier_bonus()
         attacked=self.attacked()
-        dmg = 0
+        damage = 0
         if self.estCritique():
-            dmg = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
+            damage = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
         else:
-            dmg = attacker.pow * (1-attacked.defense / 7500)
+            damage = attacker.pow * (1-attacked.defense / 7500)
 
         ## BUFFS
         if Buff.ATTACK in attacker.buffs:
-            dmg*=1.25
+            damage*=1.25
         if Buff.DEFENSE in attacked.buffs:
-            dmg/=1.25
+            damage/=1.25
 
-        dmg = max(dmg, 0)
-        if dmg > 0:
+        damage = max(damage, 0)
+        if damage > 0:
             if attacked in self.degats_superieurs:
-                dmg = dmg + dmg * 20/100
+                damage = damage + damage * 20/100
             elif attacked in self.degats_egaux:
                 pass
             else:
-                dmg = dmg - dmg *20/100
+                damage = damage - damage *20/100
 
-        dmg = math.floor(dmg)
+        damage = math.floor(damage)
 
-        if dmg > 0:
-            print(dmg)
-            attacked.lp = attacked.lp - dmg
+        if damage > 0:
+            print(damage)
+            attacked.lp = attacked.lp - damage
             if attacked.lp < 0:
                 attacked.lp = 0
 

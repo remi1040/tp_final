@@ -11,6 +11,7 @@ class Buff(Enum):
     ATTACK = 1
     DEFENSE = 2
     HOLY = 3
+    TURNCOAT = 4
 class Hero:
     def __init__(self, element: HeroElement, power, defense, leth, crtr, lp):
         # element du heros
@@ -73,8 +74,13 @@ class ArenaDamageCalculator:
         self.bonus.append((HeroElement.WATER,HeroElement.FIRE))
         self.bonus.append((HeroElement.FIRE,HeroElement.EARTH))
         self.bonus.append((HeroElement.EARTH,HeroElement.WATER))
-        self.verifier_bonus()
-        attacked=self.attacked()
+        if Buff.HOLY not in attacker.buffs:
+            self.verifier_bonus()
+            attacked=self.attacked()
+        else:
+            attacked=defenders[0]
+            attacked.defense=0
+            attacker.pow/=1.2
         damage = 0
         if self.estCritique():
             damage = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
@@ -85,7 +91,7 @@ class ArenaDamageCalculator:
         if Buff.ATTACK in attacker.buffs:
             damage*=1.25
         if Buff.DEFENSE in attacked.buffs:
-            damage/=1.25
+            damage*=0.75
 
         damage = max(damage, 0)
         if damage > 0:

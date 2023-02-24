@@ -70,13 +70,13 @@ def test_buff_defense(heros):
     hero_fire_adv=heros["hero_fire_adv"]
     hero_fire_adv.buffs=[Buff.DEFENSE] 
     ArenaDamageCalculator().computeDamage(hero_fire,[hero_fire_adv])
-    assert hero_fire_adv.lp==24
+    assert hero_fire_adv.lp==25
 def test_buff_holy(heros):
     hero_fire=heros["hero_fire"]
     hero_water_adv=heros["hero_water_adv"]
     hero_fire.buffs=[Buff.HOLY]
     ArenaDamageCalculator().computeDamage(hero_fire,[hero_water_adv])
-    assert hero_water_adv.lp==8
+    assert hero_water_adv.lp==14
 hero_feu = Hero(HeroElement.FIRE, 100, 75, 0, 0, 150)
 hero_eau = Hero(HeroElement.WATER, 100, 75, 0, 0, 200)
 hero_terre = Hero(HeroElement.EARTH, 100, 75, 0, 0, 300)

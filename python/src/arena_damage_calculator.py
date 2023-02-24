@@ -61,7 +61,8 @@ class ArenaDamageCalculator:
                     self.inferieur(element1,element2)
                 else:
                     self.egalite(element1,element2)
-                    
+    def estCritique(self):
+        return random.random() * 100 < self.attacker.crtr
     def computeDamage(self, attacker:Hero, defenders: list[Hero]):
         self.defenders=defenders
         self.attacker=attacker
@@ -74,10 +75,8 @@ class ArenaDamageCalculator:
         self.bonus.append((HeroElement.EARTH,HeroElement.WATER))
         self.verifier_bonus()
         attacked=self.attacked()
-        c = random.random() * 100 < attacker.crtr
-        print(c)
         dmg = 0
-        if c:
+        if self.estCritique():
             dmg = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
         else:
             dmg = attacker.pow * (1-attacked.defense / 7500)
@@ -85,7 +84,7 @@ class ArenaDamageCalculator:
 
         ## BUFFS
         if Buff.ATTACK in attacker.buffs:
-            if c:
+            if self.estCritique():
                 dmg += (attacker.pow * 0.25 + (0.5 + attacker.leth / 5000) * attacker.pow * 0.25) * (1-attacked.defense/7500)
             else:
                 dmg += attacker.pow * 0.25* (1-attacked.defense/7500)

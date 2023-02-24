@@ -39,6 +39,7 @@ class ArenaDamageCalculator:
 
         if attacker.element == HeroElement.WATER:
             for h in defenders:
+                #print(str(h.element) + str(attacker.element))
                 if h.lp == 0:
                     continue
                 if h.element == HeroElement.FIRE:
@@ -49,7 +50,7 @@ class ArenaDamageCalculator:
                     dis.append(h)
         elif attacker.element == HeroElement.FIRE:
             for h in defenders:
-                #print(str(h.element) + str(attacker.element))
+                print(str(h.element) + str(attacker.element))
                 if h.lp == 0:
                     continue
                 if h.element == HeroElement.FIRE:
@@ -73,11 +74,13 @@ class ArenaDamageCalculator:
         attacked = adv[math.floor(random.random() * len(adv))] if len(adv) > 0 else eq[math.floor(random.random() * len(eq))] if len(eq) > 0 else dis[math.floor(random.random() * len(dis))]
 
         c = random.random() * 100 < attacker.crtr
+        print(c)
         dmg = 0
         if c:
             dmg = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
         else:
             dmg = attacker.pow * (1-attacked.defense / 7500)
+            # print(attacker.pow * (1-attacked.defense / 7500))
 
         ## BUFFS
         if Buff.ATTACK in attacker.buffs:
@@ -101,6 +104,7 @@ class ArenaDamageCalculator:
         dmg = math.floor(dmg)
 
         if dmg > 0:
+            print(dmg)
             attacked.lp = attacked.lp - dmg
             if attacked.lp < 0:
                 attacked.lp = 0

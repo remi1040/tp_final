@@ -22,47 +22,54 @@ class Hero:
         self.buffs = list()
 
 class ArenaDamageCalculator:
-
+    def attacked(self):
+        if len(self.degats_superieurs)>0:
+            attacked = random.choice(self.degats_superieurs)
+        if len(self.degats_egaux)>0:
+            attacked=random.choice(self.degats_egaux)
+        if len(self.degats_inferieurs)>0:
+            attacked=random.choice(self.degats_inferieurs)
+        return attacked
     def computeDamage(self, attacker:Hero, defenders: list[Hero]):
         power = attacker.pow
 
-        adv = list()
-        eq = list()
-        dis = list()
+        self.degats_superieurs = list()
+        self.degats_egaux = list()
+        self.degats_inferieurs = list()
 
         if attacker.element == HeroElement.WATER:
             for h in defenders:
                 if h.lp == 0:
                     continue
                 if h.element == HeroElement.FIRE:
-                    adv.append(h)
+                    self.degats_superieurs.append(h)
                 elif h.element == HeroElement.WATER:
-                    eq.append(h)
+                    self.degats_egaux.append(h)
                 else:
-                    dis.append(h)
+                    self.degats_inferieurs.append(h)
         elif attacker.element == HeroElement.FIRE:
             for h in defenders:
                 if h.lp == 0:
                     continue
                 if h.element == HeroElement.FIRE:
-                    eq.append(h)
+                    self.degats_egaux.append(h)
                 elif h.element == HeroElement.WATER:
-                    dis.append(h)
+                    self.degats_inferieurs.append(h)
                 else:
-                    adv.append(h)
+                    self.degats_superieurs.append(h)
         else:   # Hero is of type water
             for h in defenders:
                 if h.lp == 0:
                     continue
                 if h.element == HeroElement.FIRE:
-                    dis.append(h)
+                    self.degats_inferieurs.append(h)
                 elif h.element == HeroElement.WATER:
-                    adv.append(h)
+                    self.degats_superieurs.append(h)
                 else:
-                    eq.append(h)
+                    self.degats_egaux.append(h)
 
-        attacked = adv[math.floor(random.random() * len(adv))] if len(adv) > 0 else eq[math.floor(random.random() * len(eq))] if len(eq) > 0 else dis[math.floor(random.random() * len(dis))]
-
+        
+        attacked=self.attacked()
         c = random.random() * 100 < attacker.crtr
         dmg = 0
         if c:
@@ -82,9 +89,9 @@ class ArenaDamageCalculator:
 
         dmg = max(dmg, 0)
         if dmg > 0:
-            if attacked in adv:
+            if attacked in self.degats_superieurs:
                 dmg = dmg + dmg * 20/100
-            elif attacked in eq:
+            elif attacked in self.degats_egaux:
                 pass
             else:
                 dmg = dmg - dmg *20/100

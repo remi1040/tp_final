@@ -13,12 +13,19 @@ class Buff(Enum):
 
 class Hero:
     def __init__(self, element: HeroElement, power, defense, leth, crtr, lp):
+        # element du heros
         self.element = element
+        # puissance du hero 
         self.pow = power
+        #defense du hero
         self.defense = defense
+        # surcroits des degats critique 
         self.leth = leth
+        # taux critique 
         self.crtr = crtr
+        # point de vie
         self.lp = lp
+        # liste des buffs
         self.buffs = list()
 
 class ArenaDamageCalculator:
@@ -39,6 +46,7 @@ class ArenaDamageCalculator:
 
         if attacker.element == HeroElement.WATER:
             for h in defenders:
+                #print(str(h.element) + str(attacker.element))
                 if h.lp == 0:
                     continue
                 if h.element == HeroElement.FIRE:
@@ -49,6 +57,7 @@ class ArenaDamageCalculator:
                     self.degats_inferieurs.append(h)
         elif attacker.element == HeroElement.FIRE:
             for h in defenders:
+                print(str(h.element) + str(attacker.element))
                 if h.lp == 0:
                     continue
                 if h.element == HeroElement.FIRE:
@@ -71,11 +80,13 @@ class ArenaDamageCalculator:
         
         attacked=self.attacked()
         c = random.random() * 100 < attacker.crtr
+        print(c)
         dmg = 0
         if c:
             dmg = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
         else:
             dmg = attacker.pow * (1-attacked.defense / 7500)
+            # print(attacker.pow * (1-attacked.defense / 7500))
 
         ## BUFFS
         if Buff.ATTACK in attacker.buffs:
@@ -99,6 +110,7 @@ class ArenaDamageCalculator:
         dmg = math.floor(dmg)
 
         if dmg > 0:
+            print(dmg)
             attacked.lp = attacked.lp - dmg
             if attacked.lp < 0:
                 attacked.lp = 0

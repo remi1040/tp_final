@@ -13,12 +13,19 @@ class Buff(Enum):
 
 class Hero:
     def __init__(self, element: HeroElement, power, defense, leth, crtr, lp):
+        # element du heros
         self.element = element
+        # puissance du hero 
         self.pow = power
+        #defense du hero
         self.defense = defense
+        # surcroits des degats critique 
         self.leth = leth
+        # taux critique 
         self.crtr = crtr
+        # point de vie
         self.lp = lp
+        # liste des buffs
         self.buffs = list()
 
 class ArenaDamageCalculator:
@@ -42,6 +49,7 @@ class ArenaDamageCalculator:
                     dis.append(h)
         elif attacker.element == HeroElement.FIRE:
             for h in defenders:
+                #print(str(h.element) + str(attacker.element))
                 if h.lp == 0:
                     continue
                 if h.element == HeroElement.FIRE:
@@ -61,6 +69,7 @@ class ArenaDamageCalculator:
                 else:
                     eq.append(h)
 
+        #print(str(h.element) + " - " + str(len(adv)) + " - " + str(len(eq)) + " - " + str(len(dis)))
         attacked = adv[math.floor(random.random() * len(adv))] if len(adv) > 0 else eq[math.floor(random.random() * len(eq))] if len(eq) > 0 else dis[math.floor(random.random() * len(dis))]
 
         c = random.random() * 100 < attacker.crtr

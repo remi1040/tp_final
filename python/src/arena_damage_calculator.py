@@ -84,13 +84,10 @@ class ArenaDamageCalculator:
 
         ## BUFFS
         if Buff.ATTACK in attacker.buffs:
-            if self.estCritique():
-                dmg += (attacker.pow * 0.25 + (0.5 + attacker.leth / 5000) * attacker.pow * 0.25) * (1-attacked.defense/7500)
-            else:
-                dmg += attacker.pow * 0.25* (1-attacked.defense/7500)
+            dmg*=1.25
 
         if Buff.DEFENSE in attacked.buffs:
-            dmg = dmg / (1-attacked.defense/7500) * (1-attacked.defense/7500 -0.25)
+            dmg/=1.25
 
         dmg = max(dmg, 0)
         if dmg > 0:

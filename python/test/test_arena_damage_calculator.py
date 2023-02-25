@@ -77,6 +77,24 @@ def test_buff_holy(heros):
     hero_fire.buffs=[Buff.HOLY]
     ArenaDamageCalculator().computeDamage(hero_fire,[hero_water_adv])
     assert hero_water_adv.lp==14
+def test_buff_turncoat_elements(heros):
+    hero_fire=heros["hero_fire"]
+    hero_water=heros["hero_water"]
+    hero_earth=heros["hero_earth"]
+    hero_fire_adv=heros["hero_fire_adv"]
+    hero_water_adv=heros["hero_water_adv"]
+    hero_earth_adv=heros["hero_earth_adv"]
+    hero_fire.buffs=[Buff.TURNCOAT]
+    hero_water.buffs=[Buff.TURNCOAT]
+    hero_earth.buffs=[Buff.TURNCOAT] 
+    ArenaDamageCalculator().computeDamage(hero_fire,[hero_fire_adv])
+    ArenaDamageCalculator().computeDamage(hero_water,[hero_earth_adv])
+    ArenaDamageCalculator().computeDamage(hero_earth,[hero_water_adv])
+    assert hero_fire_adv.lp==16
+    assert hero_earth_adv.lp==20
+    assert hero_water_adv.lp==24
+
+
 hero_feu = Hero(HeroElement.FIRE, 100, 75, 0, 0, 150)
 hero_eau = Hero(HeroElement.WATER, 100, 75, 0, 0, 200)
 hero_terre = Hero(HeroElement.EARTH, 100, 75, 0, 0, 300)

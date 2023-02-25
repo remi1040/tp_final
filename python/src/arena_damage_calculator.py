@@ -74,6 +74,14 @@ class ArenaDamageCalculator:
         self.bonus.append((HeroElement.WATER,HeroElement.FIRE))
         self.bonus.append((HeroElement.FIRE,HeroElement.EARTH))
         self.bonus.append((HeroElement.EARTH,HeroElement.WATER))
+        if Buff.TURNCOAT in attacker.buffs:
+            element_of_attacker=self.attacker.element
+            if element_of_attacker==HeroElement.FIRE:
+                self.attacker.element=HeroElement.WATER
+            if element_of_attacker==HeroElement.WATER:
+                self.attacker.element=HeroElement.EARTH
+            if element_of_attacker==HeroElement.EARTH:
+                self.attacker.element=HeroElement.FIRE
         if Buff.HOLY not in attacker.buffs:
             self.verifier_bonus()
             attacked=self.attacked()
@@ -81,6 +89,7 @@ class ArenaDamageCalculator:
             attacked=defenders[0]
             attacked.defense=0
             attacker.pow/=1.2
+
         damage = 0
         if self.estCritique():
             damage = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)

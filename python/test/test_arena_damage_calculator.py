@@ -93,3 +93,33 @@ def test_buff_turncoat_elements(heros):
     assert hero_fire_adv.lp==16
     assert hero_earth_adv.lp==20
     assert hero_water_adv.lp==24
+def test_damage_is_not_critical_egalite(heros):
+    hero_fire=heros["hero_fire"]
+    hero_fire.crtr=0
+    hero_fire_adv=heros["hero_fire_adv"]
+    ArenaDamageCalculator().computeDamage(hero_fire,[hero_fire_adv])
+    assert hero_fire_adv.lp==30
+def test_damage_is_not_critical_inferieur(heros):
+    hero_fire=heros["hero_fire"]
+    hero_fire.crtr=0
+    hero_water_adv=heros["hero_water_adv"]
+    ArenaDamageCalculator().computeDamage(hero_fire,[hero_water_adv])
+    assert hero_water_adv.lp==32
+def test_damage_is_not_critical_superieur(heros):
+    hero_fire=heros["hero_fire"]
+    hero_fire.crtr=0
+    hero_earth_adv=heros["hero_earth_adv"]
+    ArenaDamageCalculator().computeDamage(hero_fire,[hero_earth_adv])
+    assert hero_earth_adv.lp==28
+def test_lp_inferieur_0(heros):
+    hero_fire=heros["hero_fire"]    
+    hero_fire_adv=heros["hero_fire_adv"]
+    hero_fire_adv.lp=1
+    ArenaDamageCalculator().computeDamage(hero_fire,[hero_fire_adv])
+    assert hero_fire_adv.lp==0
+def test_damage_egal_0(heros):
+    hero_fire=heros["hero_fire"]
+    hero_fire.pow=0
+    hero_fire_adv=heros["hero_fire_adv"]    
+    ArenaDamageCalculator().computeDamage(hero_fire,[hero_fire_adv])
+    assert hero_fire_adv.lp==40

@@ -1,5 +1,6 @@
 import math
 import random
+from random import randint
 from enum import Enum
 
 class HeroElement(Enum):
@@ -12,111 +13,99 @@ class Buff(Enum):
     DEFENSE = 2
     HOLY = 3
     TURNCOAT = 4
+
 class Hero:
-    def __init__(self, element: HeroElement, power, defense, leth, crtr, lp):
-        # element du heros
+    def __init__(self, element: HeroElement, power, defense, leth, crtr, lp): 
         self.element = element
-        # puissance du hero 
         self.pow = power
-        #defense du hero
         self.defense = defense
-        # surcroits des degats critique 
         self.leth = leth
-        # taux critique 
         self.crtr = crtr
-        # point de vie
         self.lp = lp
-        # liste des buffs
         self.buffs = list()
 
 class ArenaDamageCalculator:
-    def attacked(self):
-        if len(self.degats_superieurs)>0:
-            attacked = random.choice(self.degats_superieurs)
-        if len(self.degats_egaux)>0:
-            attacked=random.choice(self.degats_egaux)
-        if len(self.degats_inferieurs)>0:
-            attacked=random.choice(self.degats_inferieurs)
-        return attacked
-    def superieur(self,element1,element2):
-        if self.attacker.element == element1:
-            for defender in self.defenders:
-                if defender.lp!=0 and defender.element==element2:
-                    self.degats_superieurs.append(defender)
-    def inferieur(self,element1,element2):
-        if self.attacker.element == element1:
-            for defender in self.defenders:
-                if defender.lp!=0 and defender.element==element2:
-                    self.degats_inferieurs.append(defender)
-    def egalite(self,element1,element2):
-        if self.attacker.element== element1:
-            for defender in self.defenders:
-                if defender.lp!=0 and defender.element==element2:
-                    self.degats_egaux.append(defender)
-    def verifier_bonus(self):
-        for element1 in HeroElement:
-            for element2 in HeroElement:
-                if (element1,element2) in self.bonus:
-                    self.superieur(element1,element2)
-                elif (element2,element1) in self.bonus:
-                    self.inferieur(element1,element2)
-                else:
-                    self.egalite(element1,element2)
-    def estCritique(self):
-        return random.random() * 100 < self.attacker.crtr
     def computeDamage(self, attacker:Hero, defenders: list[Hero]):
-        self.defenders=defenders
-        self.attacker=attacker
-        self.degats_superieurs = list()
-        self.degats_egaux = list()
-        self.degats_inferieurs = list()
-        self.bonus = list()
-        self.bonus.append((HeroElement.WATER,HeroElement.FIRE))
-        self.bonus.append((HeroElement.FIRE,HeroElement.EARTH))
-        self.bonus.append((HeroElement.EARTH,HeroElement.WATER))
-        if Buff.TURNCOAT in attacker.buffs:
-            element_of_attacker=self.attacker.element
-            if element_of_attacker==HeroElement.FIRE:
-                self.attacker.element=HeroElement.WATER
-            if element_of_attacker==HeroElement.WATER:
-                self.attacker.element=HeroElement.EARTH
-            if element_of_attacker==HeroElement.EARTH:
-                self.attacker.element=HeroElement.FIRE
-        if Buff.HOLY not in attacker.buffs:
-            self.verifier_bonus()
-            attacked=self.attacked()
-        else:
-            attacked=defenders[0]
-            attacked.defense=0
-            attacker.pow-=attacker.pow*20/100
-
-        damage = 0
         
-        damage = attacker.pow
-        if self.estCritique():
-            damage+= damage * (50 + attacker.leth / 50)/100
-        damage -= damage * attacked.defense / 7500
+        adv = list()
+        eq = list()
+        dis = list()
+        
+        if Buff.TURNCOAT in attacker.buffs:
+            if attacker.element==HeroElement.FIRE:
+                attacker.element=HeroElement.WATER
+            elif attacker.element==HeroElement.WATER:
+                attacker.element=HeroElement.EARTH
+            elif attacker.element==HeroElement.EARTH:
+                attacker.element=HeroElement.FIRE
+        
+        for i in defenders:
+            if Buff.TURNCOAT in i.buffs:
+                if i.element==HeroElement.FIRE:
+                    i.element=HeroElement.WATER
+                elif i.element==HeroElement.WATER:
+                    i.element=HeroElement.EARTH
+                elif i.element==HeroElement.EARTH:
+                    i.element=HeroElement.FIRE
+        
+        for h in defenders:
+            if h.lp != 0:
+                if attacker.element == HeroElement.WATER:
+                    if h.element == HeroElement.FIRE:
+                        adv.append(h)
+                    elif h.element == HeroElement.WATER:
+                        eq.append(h)
+                    else:
+                        dis.append(h)
+                elif attacker.element == HeroElement.FIRE:
+                    if h.element == HeroElement.FIRE:
+                        eq.append(h)
+                    elif h.element == HeroElement.WATER:
+                        dis.append(h)
+                    else:
+                        adv.append(h)
+                else:   
+                    if h.element == HeroElement.FIRE:
+                        dis.append(h)
+                    elif h.element == HeroElement.WATER:
+                        adv.append(h)
+                    else:
+                        eq.append(h)
+        
+        attacked = adv[math.floor(random.random() * len(adv))] if len(adv) > 0 else eq[math.floor(random.random() * len(eq))] if len(eq) > 0 else dis[math.floor(random.random() * len(dis))]
+        
+        if Buff.HOLY in attacker.buffs:
+            attacked=defenders[randint(1,len(defenders))-1]
+            while attacked.lp == 0:
+                attacked=defenders[randint(1,len(defenders))-1]
+            attacked.defense=0
+            attacker.pow*=0.8 
+        
+        c = random.random() * 100 < attacker.crtr
+        dmg = 0
+        if c:
+            dmg = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
+        else:
+            dmg = attacker.pow * (1-attacked.defense / 7500)
+
         ## BUFFS
         if Buff.ATTACK in attacker.buffs:
-            damage+=damage * 25/100
-        if Buff.DEFENSE in attacked.buffs:
-            damage-=damage * 25/100
-
-        damage = max(damage, 0)
-        if damage > 0:
-            if attacked in self.degats_superieurs:
-                damage = damage + damage * 20/100
-            elif attacked in self.degats_egaux:
-                pass
+            if c:
+                dmg += (attacker.pow * 0.25 + (0.5 + attacker.leth / 5000) * attacker.pow * 0.25) * (1-attacked.defense/7500)
             else:
-                damage = damage - damage *20/100
+                dmg += attacker.pow * 0.25* (1-attacked.defense/7500)
 
-        damage = math.floor(damage)
+        if Buff.DEFENSE in attacked.buffs:
+            dmg = dmg / (1-attacked.defense/7500) * (1-attacked.defense/7500 -0.25)
 
-        if damage > 0:
-                
-            attacked.lp = attacked.lp - damage
-            print(damage)            
+        if dmg > 0:
+            if attacked in adv:
+                dmg += dmg * 20/100
+            if attacked in dis:
+                dmg -= dmg *20/100
+            
+            attacked.lp = attacked.lp - math.floor(dmg)
             if attacked.lp < 0:
-                attacked.lp = 0    
+                attacked.lp = 0
+
         return defenders

@@ -76,7 +76,7 @@ def test_buff_holy(heros):
     hero_water_adv=heros["hero_water_adv"]
     hero_fire.buffs=[Buff.HOLY]
     ArenaDamageCalculator().computeDamage(hero_fire,[hero_water_adv])
-    assert hero_water_adv.lp==14
+    assert hero_water_adv.lp==15
 def test_buff_turncoat_elements(heros):
     hero_fire=heros["hero_fire"]
     hero_water=heros["hero_water"]

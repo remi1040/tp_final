@@ -88,7 +88,7 @@ class ArenaDamageCalculator:
         else:
             attacked=defenders[0]
             attacked.defense=0
-            attacker.pow/=1.2
+            attacker.pow*=0.8
 
         damage = 0
         if self.estCritique():

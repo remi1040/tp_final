@@ -88,19 +88,19 @@ class ArenaDamageCalculator:
         else:
             attacked=defenders[0]
             attacked.defense=0
-            attacker.pow*=0.8
+            attacker.pow-=attacker.pow*20/100
 
         damage = 0
+        
+        damage = attacker.pow
         if self.estCritique():
-            damage = (attacker.pow + (0.5 + attacker.leth / 5000) * attacker.pow) * (1-attacked.defense /7500)
-        else:
-            damage = attacker.pow * (1-attacked.defense / 7500)
-
+            damage+= damage * (50 + attacker.leth / 50)/100
+        damage -= damage * attacked.defense / 7500
         ## BUFFS
         if Buff.ATTACK in attacker.buffs:
-            damage*=1.25
+            damage+=damage * 25/100
         if Buff.DEFENSE in attacked.buffs:
-            damage*=0.75
+            damage-=damage * 25/100
 
         damage = max(damage, 0)
         if damage > 0:
@@ -114,9 +114,9 @@ class ArenaDamageCalculator:
         damage = math.floor(damage)
 
         if damage > 0:
-            print(damage)
+                
             attacked.lp = attacked.lp - damage
+            print(damage)            
             if attacked.lp < 0:
-                attacked.lp = 0
-
+                attacked.lp = 0    
         return defenders
